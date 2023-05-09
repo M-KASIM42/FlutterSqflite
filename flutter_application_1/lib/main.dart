@@ -30,23 +30,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+
   List<Map<String, dynamic>> _journals = [];
 
-  bool _isLoading = true;
+bool _isLoading = true;
 
-  void _refreshJournals() async{
-    // TODO listedeki bütün elemanları getirin.
-    setState(()  {
-      DbHelper().getItems().then((value) => _journals=value);
+void _refreshJournals() async {
+  // TODO listedeki bütün elemanları getirin.
+  List<Map<String, dynamic>> items = await DbHelper().getItems();
+  setState(() {
+    _journals = items;
+    _isLoading = false;
+  });
+}
 
-      _isLoading = false;
-    });
-  }
+
 
   @override
   void initState() {
     super.initState();
     _refreshJournals();
+    debugPrint(_journals.toString());
   }
 
   final TextEditingController _titleController = TextEditingController();
@@ -172,7 +176,10 @@ class _HomePageState extends State<HomePage> {
                       icon: const Icon(Icons.delete),
                       // TODO silme işlemni gerçekleştirmesini sağlayınız.
                       onPressed: (){
-                         _deleteItem(index);
+                        setState(() {
+                          _deleteItem(index + 1);
+                        });
+                         
                       },
                     ),
                   ],
